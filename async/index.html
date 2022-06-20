@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Cats with Async</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <h1>Random Cats App</h1>
+    <button type="button" onclick="getRandomCats(API_URL_RANDOM)">Discover New Cats</button>
+        <div class="container">
+            <h2>Random Cats</h2>
+            <span id="Error"></span>
+            <section id="random-cats">
+                <article>
+                    <img id="img1">
+                    <button id="btn1">Save Cat in favorites</button>
+                </article>
+                <article>
+                    <img id="img2">
+                    <button id="btn2">Save Cat in favorites</button>
+                </article>
+                <article>
+                    <img id="img3">
+                    <button id="btn3">Save Cat in favorites</button>
+                </article>
+            </section>
+            <h2>Favorites Cats</h2>
+            <section id="favorites-cats">
+            </section>
+        </div>
+    <!-- <script src="./main.js"></script> -->
+    <script src="./index.js"></script>
+</body>
+</html>

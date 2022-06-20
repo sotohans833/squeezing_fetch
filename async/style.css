@@ -1,0 +1,12 @@
+img {
+    max-width: 300px;
+    height: 200px;
+    display: block;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+section {
+    display: flex;
+    grid-area: auto;
+}

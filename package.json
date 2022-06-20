@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "xmlhttprequest": "^1.8.0"
+  },
+  "name": "api-rest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "API",
+    "rest"
+  ],
+  "author": "HANS DAVID MANOTAS SOTO",
+  "license": "ISC",
+  "description": ""
+}

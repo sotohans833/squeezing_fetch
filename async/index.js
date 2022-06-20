@@ -2,6 +2,10 @@ const API_URL_RANDOM = "https://api.thecatapi.com/v1/images/search?limit=3&api_k
 
 const API_URL_FAVORITES = "https://api.thecatapi.com/v1/favourites?api_key=fff1d4c4-91b9-4bf7-b587-b88061086c4e";
 
+const API_URL_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=fff1d4c4-91b9-4bf7-b587-b88061086c4e`;
+
+
+
 const spanError =  document.getElementById("Error");
 
 async function getRandomCats () {
@@ -35,14 +39,17 @@ async function getFavoritesCats() {
         if (res.status !== 200) {
                 spanError.innerHTML = "Hubo un error: " + res.status;
         }else{
+                const section = document.getElementById("favorites-cats");
+                section.innerHTML = "";
+
                 data.forEach(cat =>{
-                        const section = document.getElementById("favorites-cats");
                         const article =  document.createElement("article");
                         const img = document.createElement("img");
                         const btn = document.createElement("button");
                         const btnText = document.createTextNode("keep cat off favourites");
                         btn.appendChild(btnText);
                         img.src = cat.image.url;
+                        btn.onclick = () => deleteFavoriteCat(cat.id);
                         article.appendChild(img);
                         article.appendChild(btn);
                         section.appendChild(article);
@@ -66,6 +73,25 @@ async function saveFavoriteCat(id){
         console.log("saveFavoriteCats", data);
         if(res.status !== 200){
                 spanError.innerHTML = "You got an error " + res.status +  data.message;
+        }else{
+                console.log("Cat saved successfully");
+                getFavoritesCats();
+        }
+}
+
+async function deleteFavoriteCat(id){
+        const res = await fetch(API_URL_DELETE(id), {
+                method: "DELETE",
+        });
+        const data = await res.json();
+
+        console.log("deleteFavoriteCat", data);
+        if (res.status !== 200) {
+                spanError.innerHTML = "You got an error " + res.status + data.message;
+        }
+        else{
+                console.log("Cat deleted successfully");
+                getFavoritesCats();
         }
 }
 

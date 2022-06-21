@@ -1,8 +1,10 @@
-const API_URL_RANDOM = "https://api.thecatapi.com/v1/images/search?limit=3&api_key=fff1d4c4-91b9-4bf7-b587-b88061086c4e";
+const API_URL_RANDOM = "https://api.thecatapi.com/v1/images/search?limit=3";
 
-const API_URL_FAVORITES = "https://api.thecatapi.com/v1/favourites?api_key=fff1d4c4-91b9-4bf7-b587-b88061086c4e";
+const API_URL_FAVORITES = "https://api.thecatapi.com/v1/favourites";
 
-const API_URL_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=fff1d4c4-91b9-4bf7-b587-b88061086c4e`;
+const API_URL_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}`;
+
+const API_URL_UPLOAD = "https://api.thecatapi.com/v1/images/upload";
 
 
 
@@ -34,7 +36,12 @@ async function getRandomCats () {
 }
 
 async function getFavoritesCats() {
-        const res = await fetch(API_URL_FAVORITES);
+        const res = await fetch(API_URL_FAVORITES, {
+                method: 'GET',
+                headers: {
+                        "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
+                }
+        });
         const data = await res.json();
         if (res.status !== 200) {
                 spanError.innerHTML = "Hubo un error: " + res.status;
@@ -63,6 +70,7 @@ async function saveFavoriteCat(id){
                 method: "POST",
                 headers: {
                         "Content-Type": "application/json",
+                        "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
                 },
                 body: JSON.stringify({
                         image_id: id
@@ -82,6 +90,9 @@ async function saveFavoriteCat(id){
 async function deleteFavoriteCat(id){
         const res = await fetch(API_URL_DELETE(id), {
                 method: "DELETE",
+                headers:{
+                "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
+                }
         });
         const data = await res.json();
 
@@ -92,6 +103,30 @@ async function deleteFavoriteCat(id){
         else{
                 console.log("Cat deleted successfully");
                 getFavoritesCats();
+        }
+}
+
+async function uploadCatPhoto(){
+        const form = document.getElementById("upload-form");
+        const formData = new FormData(form);
+        console.log(formData.get("file"));
+        const res = await fetch(API_URL_UPLOAD,{
+                method: "POST",
+                headers: {
+                        // "Content-Type": "multipart/form-data",
+                        "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
+                },
+                body: formData,
+        })
+        const data = await res.json();
+        if(res.status !== 201){
+                spanError.innerHTML = "There was an error " + res.status + data.message;
+                console.log({data});
+        }else{
+                console.log("successfully uploaded");
+                console.log({data});
+                console.log(data.url);
+                saveFavoriteCat(data.id);
         }
 }
 

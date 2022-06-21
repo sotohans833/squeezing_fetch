@@ -27,7 +27,15 @@
                     <button id="btn3">Save Cat in favorites</button>
                 </article>
             </section>
-            <h2> Cats</h2>
+
+            <h2>Upload your Cat Photo</h2>
+            <section id="uploading-cats">
+                <form id="upload-form" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file" id="file">
+                    <button type="button" onclick="uploadCatPhoto()">Upload</button>
+            </section>
+
+            <h2>Favorite Cats</h2>
             <section id="favorites-cats">
             </section>
         </div>

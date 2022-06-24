@@ -1,8 +1,11 @@
+const api = axios.create({
+        baseURL: "https://api.thecatapi.com/v1"
+});
+api.defaults.headers.common["x-api-key"] = "fff1d4c4-91b9-4bf7-b587-b88061086c4e";
+
 const API_URL_RANDOM = "https://api.thecatapi.com/v1/images/search?limit=3";
 
 const API_URL_FAVORITES = "https://api.thecatapi.com/v1/favourites";
-
-const API_URL_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}`;
 
 const API_URL_UPLOAD = "https://api.thecatapi.com/v1/images/upload";
 
@@ -36,15 +39,16 @@ async function getRandomCats () {
 }
 
 async function getFavoritesCats() {
-        const res = await fetch(API_URL_FAVORITES, {
-                method: 'GET',
-                headers: {
-                        "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
-                }
-        });
-        const data = await res.json();
-        if (res.status !== 200) {
-                spanError.innerHTML = "Hubo un error: " + res.status;
+        const { data, status } = await api.get("/favourites")
+        // const res = await fetch(API_URL_FAVORITES, {
+        //         method: 'GET',
+        //         headers: {
+        //                 "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
+        //         }
+        // });
+        // const data = await res.json();
+        if (status !== 200) {
+                spanError.innerHTML = "Hubo un error: " + status;
         }else{
                 const section = document.getElementById("favorites-cats");
                 section.innerHTML = "";
@@ -66,21 +70,23 @@ async function getFavoritesCats() {
 }
 
 async function saveFavoriteCat(id){
-        const res = await fetch(API_URL_FAVORITES, {
-                method: "POST",
-                headers: {
-                        "Content-Type": "application/json",
-                        "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
-                },
-                body: JSON.stringify({
-                        image_id: id
-                })
-        })
-        const data = await res.json();
+        const { data, status} = await api.post("/favourites", {image_id: id});
+
+        // const res = await fetch(API_URL_FAVORITES, {
+        //         method: "POST",
+        //         headers: {
+        //                 "Content-Type": "application/json",
+        //                 "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
+        //         },
+        //         body: JSON.stringify({
+        //                 image_id: id
+        //         })
+        // })
+        // const data = await res.json();
 
         console.log("saveFavoriteCats", data);
-        if(res.status !== 200){
-                spanError.innerHTML = "You got an error " + res.status +  data.message;
+        if(status !== 200){
+                spanError.innerHTML = "You got an error " + status +  data.message;
         }else{
                 console.log("Cat saved successfully");
                 getFavoritesCats();
@@ -88,17 +94,18 @@ async function saveFavoriteCat(id){
 }
 
 async function deleteFavoriteCat(id){
-        const res = await fetch(API_URL_DELETE(id), {
-                method: "DELETE",
-                headers:{
-                "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
-                }
-        });
-        const data = await res.json();
+        const { data, status } = await api.delete(`/favourites/${id}`, {image_id: id})
+        // const res = await fetch(API_URL_DELETE(id), {
+        //         method: "DELETE",
+        //         headers:{
+        //         "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
+        //         }
+        // });
+        // const data = await res.json();
 
         console.log("deleteFavoriteCat", data);
-        if (res.status !== 200) {
-                spanError.innerHTML = "You got an error " + res.status + data.message;
+        if (status !== 200) {
+                spanError.innerHTML = "You got an error " + status + data.message;
         }
         else{
                 console.log("Cat deleted successfully");
@@ -109,13 +116,14 @@ async function deleteFavoriteCat(id){
 async function uploadCatPhoto(){
         const form = document.getElementById("upload-form");
         const formData = new FormData(form);
-        console.log(formData.get("file"));
+        console.log(formData.get("file"), "antes de cargar");
         const res = await fetch(API_URL_UPLOAD,{
                 method: "POST",
                 headers: {
-                        // "Content-Type": "multipart/form-data",
+                        // "Content-Type": "multipart/form-data;boundary=----WebKitFormBoundaryyrV7KO0BoCBuDbTL",
                         "x-api-key": "fff1d4c4-91b9-4bf7-b587-b88061086c4e",
                 },
+                //Si le pasamos una instancia de prototipo FormData, fetch automáticamente define el Content-Type como previamente lo definimos.
                 body: formData,
         })
         const data = await res.json();
@@ -123,6 +131,8 @@ async function uploadCatPhoto(){
                 spanError.innerHTML = "There was an error " + res.status + data.message;
                 console.log({data});
         }else{
+                const imageChosen = document.getElementById("upLoadedImage");
+                imageChosen.src = data.url;
                 console.log("successfully uploaded");
                 console.log({data});
                 console.log(data.url);
